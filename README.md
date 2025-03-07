@@ -2,7 +2,7 @@
 
 **Real-Time Eye-Tracking & AI-Powered UX Analytics Web App**
 
-EyeUX is an innovative application designed to improve user experience (UX) through real-time webcam-based eye-tracking analytics and actionable, AI-generated UX recommendations.
+EyeUX is an innovative application designed to improve user experience (UX) through real-time webcam-based eye-tracking analytics and mouse inputs, AI-generated UX recommendations.
 
 ---
 
