@@ -1,6 +1,6 @@
-# 🗓 Daily Standups
+# Daily Standups
 
-## 📅 March 07, 2025
+## March 07, 2025
 **@mirasimali5005**
 Today: Will complete Flask API setup.
 Issue:
