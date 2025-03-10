@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "Mir Asim Ali"
+    return "PURRRR"
 
 @app.route("/show-login", methods=["GET"])
 def show_login():
@@ -27,8 +27,6 @@ def login():
     if email != "no email":
         a+= f" email: {email}"
     return a
-
-
 
 @app.route("/open-session", methods=["POST"])
 def open_session():
