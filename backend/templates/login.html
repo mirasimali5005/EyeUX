@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form action="/login" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+        
+        <button type="submit">Login</button>
+    </form>
+    
+    <hr>
+
+    <h2>Start a New Session</h2>
+    <button onclick="startSession()">Start Session</button>
+    <p id="session-id">Session ID: None</p>
+
+    <hr>
+
+    <h2>Send Eye-Tracking Data</h2>
+    <form id="eye-track-form" onsubmit="sendEyeData(event)">
+        <label for="x">X:</label>
+        <input type="number" id="x" required><br>
+        
+        <label for="y">Y:</label>
+        <input type="number" id="y" required><br>
+        
+        <label for="timestamp">Timestamp:</label>
+        <input type="number" id="timestamp" required><br>
+        
+        <button type="submit">Send Data</button>
+    </form>
+    
+    <hr>
+
+    <h2>Close Session</h2>
+    <button onclick="closeSession()">Close Session</button>
+
+    <hr>
+
+    <h2>Output</h2>
+    <pre id="output"></pre>
+
+    <script>
+        let sessionId = null;
+
+        // Start Session
+        async function startSession() {
+            const response = await fetch('/open-session', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            sessionId = data.session_id;
+            document.getElementById('session-id').innerText = `Session ID: ${sessionId}`;
+            logOutput(`Session started: ${sessionId}`);
+        }
+
+        // Send Eye-Tracking Data
+        async function sendEyeData(event) {
+            event.preventDefault();
+
+            if (!sessionId) {
+                logOutput("Error: No session active.");
+                return;
+            }
+
+            const x = document.getElementById('x').value;
+            const y = document.getElementById('y').value;
+            const timestamp = document.getElementById('timestamp').value;
+
+            const response = await fetch('/eye-track', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    x: parseInt(x),
+                    y: parseInt(y),
+                    timestamp: parseInt(timestamp)
+                })
+            });
+
+            const data = await response.json();
+            logOutput(`Eye data sent: ${JSON.stringify(data)}`);
+        }
+
+        // Close Session
+        async function closeSession() {
+            if (!sessionId) {
+                logOutput("Error: No session active.");
+                return;
+            }
+
+            const response = await fetch('/close-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ session_id: sessionId })
+            });
+
+            const data = await response.json();
+            logOutput(`Session closed. Data:\n${JSON.stringify(data, null, 2)}`);
+            sessionId = null;
+            document.getElementById('session-id').innerText = "Session ID: None";
+        }
+
+        // Log Output
+        function logOutput(message) {
+            const output = document.getElementById('output');
+            output.innerText += message + '\n';
+        }
+    </script>
+</body>
+</html>
