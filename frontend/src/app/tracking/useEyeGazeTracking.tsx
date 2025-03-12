@@ -46,13 +46,17 @@ const useEyeGazeTracking = () => {
         window.webgazer = webgazer;
 
         // Set up webgazer
-        webgazerRef.current.setGazeListener((data: { x: number, y: number, elapsedTime: number }) => {
+        webgazerRef.current.setGazeListener((data: { x: number, y: number}, elapsedTime: number) => {
             
             webgazerRef.current.util.bound(data);
             
             if (isTracking) {
                 console.log("New data",data);
-                addTrackingData(data);
+                addTrackingData({
+                    x: data.x,
+                    y: data.y,
+                    elapsedTime
+                });
             }
         });
 

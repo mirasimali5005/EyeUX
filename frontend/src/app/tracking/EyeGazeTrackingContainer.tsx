@@ -1,7 +1,19 @@
 'use client'
+import useSendOneDataPointForSession from '@/externalApiCalls/useSendOneDataPointForSession';
 import useEyeGazeTracking from './useEyeGazeTracking';  // Import the custom hook
+import { useEffect, useState } from 'react';
+import { randomBytes } from 'crypto';
 
 const EyeGazeTrackingContainer = () => {
+    const [sessionId, setSessionId] = useState<string>('');
+    useEffect(() => {
+
+        //Load from the backend
+        const sessionId = randomBytes(16).toString('hex');
+        // const sessionId = '6eabb159-a867-4cf7-b3ee-b3fd65ce6fa3';
+        setSessionId(sessionId);
+    }, []);
+    
     // Use the custom hook to handle eye gaze tracking
     const { 
         trackingData, 
@@ -11,6 +23,23 @@ const EyeGazeTrackingContainer = () => {
         removeTrackingData,
         error
     } = useEyeGazeTracking();
+
+
+
+    const {sendGazeData} = useSendOneDataPointForSession(sessionId);
+    useEffect(() => {
+        if(isTracking && trackingData.length > 0) {
+            const lastData = trackingData[trackingData.length - 1];
+
+            sendGazeData({
+                x: lastData.x,
+                y: lastData.y,
+                timestamp: lastData.elapsedTime
+            });
+        }
+    }, [trackingData, isTracking, sendGazeData]);
+
+
 
     return (
         <div className="p-4">
@@ -56,7 +85,7 @@ const EyeGazeTrackingContainer = () => {
                 {trackingData && trackingData.map((data, index) => (
                     <li key={index} className="mb-2">
                         <div className="flex justify-between items-center">
-                            <span>{`x: ${data.x}, y: ${data.y}, elapsedTime: ${data.elapsedTime}`}</span>
+                            <span>{`x: ${data.x}, y: ${data.y}, timestamp: ${data.elapsedTime}`}</span>
                             <button 
                                 className="bg-gray-300 text-gray-700 px-2 py-1 rounded hover:bg-gray-400 ml-4"
                                 onClick={() => removeTrackingData(index)}

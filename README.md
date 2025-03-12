@@ -1,5 +1,11 @@
 # EyeUX
 
+# How to start the app
+
+Clone it and run the command ```docker compose up --build``` this runs the full app. 
+> TODO: add dev support for next js because currently the prod version is built,
+so to dev you have to run npm install in frontend folder and pip install in backend folder to do development.
+
 **Real-Time Eye-Tracking & AI-Powered UX Analytics Web App**
 
 EyeUX is an innovative application designed to improve user experience (UX) through real-time webcam-based eye-tracking analytics and mouse movements, AI-generated UX recommendations.
