@@ -1,9 +1,10 @@
+import os
 from flask import Flask, jsonify, request, render_template
 import uuid
 
 
 all_IDS = {}
-
+BACKEND_PORT = os.getenv("BACKEND_PORT")
 app = Flask(__name__)
 
 @app.route('/')
@@ -70,4 +71,4 @@ def get_eye_data(session_id):
     
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=BACKEND_PORT)

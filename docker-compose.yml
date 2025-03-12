@@ -1,0 +1,14 @@
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT:-5000}
