@@ -1,10 +1,15 @@
+import os
 from flask import Flask, jsonify, request, render_template
 import uuid
+from flask_cors import CORS
 
+
+FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "http://localhost:3000, http://localhost").split(",")
 
 all_IDS = {}
-
+BACKEND_PORT = os.getenv("BACKEND_PORT",5001)
 app = Flask(__name__)
+CORS(app, origins=FRONTEND_ORIGINS, supports_credentials=True)
 
 @app.route('/')
 def index():
@@ -47,6 +52,11 @@ def close_session():
 def eye_track():
     eye_data = request.get_json()
     session = eye_data.get("session_id")
+
+  #TODO: Temp testing remove if you dont want to create session if it does not exist
+    all_IDS[session] = all_IDS.get(session, [])
+
+
     if not session or session not in all_IDS:
         return jsonify({"status": "declined", "error": "Invalid session ID"})
     if not eye_data:
@@ -62,12 +72,18 @@ def eye_track():
 
 @app.route("/get-eye-data/<session_id>", methods=["GET"])
 def get_eye_data(session_id):
-    extract_from = request.get_json()
-    session_id = extract_from.get("session_id")
+    # Why using request.get_json() here? that is for POST requests
+    # You already have the session_id as a parameter in the req url itself simply
+    # extract_from = request.get_json()
+    # session_id = extract_from.get("session_id")
+
+    #TODO: remove if you dont want to create session if it does not exist
+    all_IDS[session_id] = all_IDS.get(session_id, [])
+
     if session_id not in all_IDS:
         return jsonify({"error": "Invalid session ID"})
     return jsonify(all_IDS[session_id])
     
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True, port=BACKEND_PORT)
